@@ -2,36 +2,51 @@ import streamlit as st
 import requests
 import datetime
 
-# Title of the app
-st.title("TaxiFareModel Frontend")
+# Titre de l'application
+st.title("Façade du modèle TaxiFare")
 
-# Markdown text
+# Introduction
 st.markdown('''
-## Welcome to the Taxi Fare Prediction App!
-Use this app to get a prediction of taxi fares in New York City.
+# TaxiFareModel front
+
+N'oubliez pas qu'il existe plusieurs façons d'afficher du contenu sur votre page Web...
+
+Soit comme pour le titre en créant simplement une chaîne (ou une f-string). Ou comme avec ce paragraphe en utilisant les `st.` fonctions
+''')
+
+# Controles pour demander les paramètres du trajet
+st.markdown('''
+## Ici, nous aimerions ajouter quelques contrôleurs afin de demander à l'utilisateur de sélectionner les paramètres du trajet
+Demandons :
+- date et l'heure
+- longitude de prise en charge
+- latitude de prise en charge
+- longitude de dépôt
+- latitude de dépôt
+- nombre de passagers
 ''')
 
 # Input fields for the ride parameters
-st.header("Enter the ride details")
+st.header("Entrez les détails du trajet")
 
-# Date and time
-pickup_date = st.date_input("Pickup date", datetime.date.today())
-pickup_time = st.time_input("Pickup time", datetime.datetime.now().time())
+# Date et heure
+pickup_date = st.date_input("Date de prise en charge", datetime.date.today())
+pickup_time = st.time_input("Heure de prise en charge", datetime.datetime.now().time())
 
-# Pickup longitude and latitude
-pickup_longitude = st.number_input("Pickup Longitude", value=-73.985428)
-pickup_latitude = st.number_input("Pickup Latitude", value=40.748817)
+# Longitude et latitude de prise en charge
+pickup_longitude = st.number_input("Longitude de prise en charge", value=-73.985428)
+pickup_latitude = st.number_input("Latitude de prise en charge", value=40.748817)
 
-# Dropoff longitude and latitude
-dropoff_longitude = st.number_input("Dropoff Longitude", value=-73.985428)
-dropoff_latitude = st.number_input("Dropoff Latitude", value=40.748817)
+# Longitude et latitude de dépôt
+dropoff_longitude = st.number_input("Longitude de dépôt", value=-73.985428)
+dropoff_latitude = st.number_input("Latitude de dépôt", value=40.748817)
 
-# Passenger count
-passenger_count = st.number_input("Passenger Count", min_value=1, max_value=8, value=1)
+# Nombre de passagers
+passenger_count = st.number_input("Nombre de passagers", min_value=1, max_value=8, value=1)
 
-# Call the API
-if st.button("Get Fare Prediction"):
-    # Create a dictionary with the parameters
+# Appeler l'API
+if st.button("Obtenir la prédiction du tarif"):
+    # Créer un dictionnaire avec les paramètres
     params = {
         "pickup_datetime": f"{pickup_date} {pickup_time}",
         "pickup_longitude": pickup_longitude,
@@ -41,18 +56,18 @@ if st.button("Get Fare Prediction"):
         "passenger_count": passenger_count
     }
 
-    # URL of the API
+    # URL de l'API
     url = 'https://taxifare.lewagon.ai/predict'
 
-    # Make the API request
+    # Faire la requête à l'API
     response = requests.get(url, params=params)
     prediction = response.json()
 
-    # Display the prediction
-    st.write(f"Predicted Fare: ${prediction['fare_amount']:.2f}")
+    # Afficher la prédiction
+    st.write(f"Tarif prédit : ${prediction['fare_amount']:.2f}")
 
-# Optional: Add a map to show the pickup and dropoff points
-st.header("Ride Map")
+# Ajouter une carte pour montrer les points de prise en charge et de dépôt
+st.header("Carte du trajet")
 st.map({
     "lat": [pickup_latitude, dropoff_latitude],
     "lon": [pickup_longitude, dropoff_longitude]
