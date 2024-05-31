@@ -61,13 +61,14 @@ if st.button("Obtenir la prédiction du tarif"):
 
     # Faire la requête à l'API
     response = requests.get(url, params=params)
-    data = response.json()
+    prediction = response.json()
 
-    # Afficher la réponse brute pour le débogage
-    st.write("Réponse de l'API : ", data)
+    # Afficher la prédiction
+    st.write(f"Tarif prédit : ${prediction['fare_amount']:.2f}")
 
-    # Vérifier si la clé 'fare_amount' est présente dans la réponse
-    if 'fare_amount' in data:
-        st.write(f"Tarif prédit : ${data['fare_amount']:.2f}")
-    else:
-        st.write("Erreur : La réponse de l'API ne contient pas de clé 'fare_amount'.")
+# Ajouter une carte pour montrer les points de prise en charge et de dépôt
+st.header("Carte du trajet")
+st.map({
+    "lat": [pickup_latitude, dropoff_latitude],
+    "lon": [pickup_longitude, dropoff_longitude]
+})
